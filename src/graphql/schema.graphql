@@ -1,0 +1,126 @@
+type User {
+  id: ID!
+  name: String
+  email: String
+  age: Int
+}
+
+type Letter {
+  id: Int
+  penname: String
+  poet: Poet
+  age: Int
+  letterBody: String
+  letterBodyType: String
+  address: String
+  imageUrl: String
+  likesCount: Int
+  description: String
+}
+
+type Haiku {
+  id: Int
+  text: String
+  textKana: String
+  author: Poet
+  kigo: [Kigo]
+  letterBody: String
+  description: String
+  likesCount: Int
+}
+
+type Kigo {
+  id: Int
+  name: String
+  nameKana: String
+  season: String
+}
+
+type Poet {
+  id: ID!
+  name: String
+  nameKana: String
+  birthYear: Int
+  diedYear: Int
+}
+
+type EdgeInfo {
+  cursor: Int
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type HaikuQuery {
+  pageInfo: EdgeInfo
+  items: [Haiku]
+}
+
+type HaikuEdge {
+  node: Haiku
+  cursor: String!
+}
+
+type HaikuConnection {
+  edges: [HaikuEdge!]!
+  pageInfo: PageInfo!
+}
+type Query {
+  users: [User]
+  letters: [Letter]
+  haikus(limit: Int!, after: Int!): HaikuConnection
+  poets: [Poet]
+  letter(id: ID!): Letter
+  lettersByIds(ids: [ID]): [Letter]
+  prefectures: [Prefecture]
+}
+
+input InputLetter {
+  id: Int
+  penname: String
+  age: Int
+  letterBody: String
+  letterBodyType: String
+  address: String
+  imageUrl: String
+  likesCount: Int
+  description: String
+}
+
+type likeLetterResponse {
+  likesCount: Int
+}
+
+type Mutation {
+  createLetter(
+    penname: String
+    poetId: Int
+    age: Int
+    address: String
+    letterBody: String
+    letterBodyType: String
+    imageUrl: String
+    description: String
+  ): Letter
+  createPoet(
+    name: String
+    birthYear: String
+    diedYear: String
+    imageUrl: String
+  ): Poet
+  likeLetter(id: Int): likeLetterResponse
+}
+
+type Prefecture {
+  id: ID!
+  name: String
+  nameKana: String
+}

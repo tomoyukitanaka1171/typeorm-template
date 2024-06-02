@@ -1,0 +1,144 @@
+
+input InputLetter {
+  id: Int
+  penname: String
+  age: Int
+  letterBody: String
+  letterBodyType: String
+  address: String
+  imageUrl: String
+  likesCount: Int
+  description: String
+}
+
+fragment PoetContents on Poet {
+  id
+  name
+  nameKana
+  birthYear
+  diedYear
+}
+
+fragment LetterContents on Letter {
+  id
+  penname
+  poet {
+    id
+    name
+    nameKana
+    birthYear
+    diedYear
+  }
+  age
+  letterBody
+  letterBodyType
+  address
+  likesCount
+  description
+  imageUrl
+}
+
+fragment HaikuContents on Haiku {
+  id
+  text
+  textKana
+  author {
+    id
+    name
+    nameKana
+    birthYear
+    diedYear
+  }
+  kigo {
+    id
+    name
+    nameKana
+    season
+  }
+  description
+  likesCount
+}
+
+query LetterById($id: ID!) {
+  letter(id: $id) {
+    ...LetterContents
+  }
+}
+
+query LettersByIds($ids: [ID]) {
+  lettersByIds(ids: $ids) {
+    ...LetterContents
+  }
+}
+
+query Letters {
+  letters {
+    ...LetterContents
+  }
+}
+
+query Haikus($limit: Int!, $after: Int!) {
+  haikus(limit: $limit, after: $after) {
+    edges {
+      node {
+        ...HaikuContents
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+query Poets {
+  poets {
+    ...PoetContents
+  }
+}
+
+mutation Letter(
+  $penname: String
+  $poetId: Int
+  $age: Int
+  $address: String
+  $letterBody: String
+  $letterBodyType: String
+  $imageUrl: String
+  $description: String
+) {
+  createLetter(
+    penname: $penname
+    poetId: $poetId
+    age: $age
+    address: $address
+    letterBody: $letterBody
+    letterBodyType: $letterBodyType
+    imageUrl: $imageUrl
+    description: $description
+  ) {
+    ...LetterContents
+  }
+}
+
+mutation Poet(
+  $name: String
+  $nameKana: String
+  $birthYear: String
+  $diedYear: String
+) {
+  createPoet(name: $name, birthYear: $birthYear, diedYear: $diedYear) {
+    name
+    nameKana
+    birthYear
+    diedYear
+  }
+}
+
+mutation LikeLetter($id: Int) {
+  likeLetter(id: $id) {
+    likesCount
+  }
+}
